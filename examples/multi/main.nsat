@@ -1,0 +1,8 @@
+我想把这个文件编译成 Python
+
+// 主程序：引用 utils.nsat 里的工具函数
+引用文件 [utils.nsat]
+
+调用 [greet] 传入 "张三"
+将 [result] 设为 调用 [add] 传入 [5] 和 [3]
+输出 [result]

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSAT Studio</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 菜单栏 -->
+    <nav id="menubar">
+      <div class="menu" data-menu="file">文件<span class="arrow">▾</span>
+        <div class="menu-drop">
+          <div class="mi" data-act="open-project">打开项目…</div>
+          <div class="mi" data-act="open-file">打开文件…</div>
+          <div class="mi" data-act="new-nsat">新建 .nsat</div>
+          <div class="sep"></div>
+          <div class="mi" data-act="save-all">保存全部 <span class="kc">Ctrl+S</span></div>
+          <div class="sep"></div>
+          <div class="mi" data-act="exit">退出</div>
+        </div>
+      </div>
+      <div class="menu" data-menu="project">项目<span class="arrow">▾</span>
+        <div class="menu-drop">
+          <div class="mi" data-act="run">运行 <span class="kc">Ctrl+Enter</span></div>
+          <div class="mi" data-act="build">构建</div>
+          <div class="mi" data-act="check">校验当前文件</div>
+          <div class="sep"></div>
+          <div class="mi" data-act="refresh">刷新项目文件</div>
+        </div>
+      </div>
+      <div class="menu" data-menu="settings">设置<span class="arrow">▾</span>
+        <div class="menu-drop">
+          <div class="mi" data-act="settings">打开设置…</div>
+          <div class="mi" data-act="assoc">注册 .nsat 文件关联</div>
+        </div>
+      </div>
+      <div class="menu" data-menu="help">帮助<span class="arrow">▾</span>
+        <div class="menu-drop">
+          <div class="mi" data-act="about">关于 NSAT Studio</div>
+        </div>
+      </div>
+      <span class="menubar-bg"></span>
+    </nav>
+
+    <!-- 顶栏 -->
+    <header id="toolbar">
+      <div class="brand">NSAT<span>Studio</span></div>
+      <div class="toolbar-group">
+        <select id="lang-select">
+          <option value="">语言：自动(首行)</option>
+          <option value="python">Python</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="c">C</option>
+          <option value="cpp">C++</option>
+          <option value="java">Java</option>
+          <option value="javascript">JavaScript</option>
+          <option value="typescript">TypeScript</option>
+          <option value="csharp">C#</option>
+          <option value="php">PHP</option>
+          <option value="ruby">Ruby</option>
+          <option value="swift">Swift</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="lua">Lua</option>
+          <option value="shell">Shell / Bash</option>
+          <option value="__custom__">自定义…</option>
+        </select>
+        <input id="custom-lang" placeholder="输入自定义语言名" style="display:none" spellcheck="false">
+        <label class="check">模式
+          <select id="mode-select">
+            <option value="multi">多文件（模块）</option>
+            <option value="single">单文件（内联）</option>
+          </select>
+        </label>
+      </div>
+      <div class="toolbar-group right">
+        <button id="btn-check" class="btn">校验</button>
+        <button id="btn-run" class="btn primary">▶ 运行</button>
+        <button id="btn-build" class="btn">构建</button>
+        <button id="btn-ai" class="btn">AI 助手</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <div id="main-body">
+        <!-- 活动栏 -->
+        <nav id="activity">
+          <div class="act-btn active" data-view="explorer" title="资源管理器">📁</div>
+          <div class="act-btn" data-view="assistant" title="AI 助手">🤖</div>
+          <div class="act-btn" data-view="output" title="输出">🖥️</div>
+        </nav>
+
+        <!-- 侧栏 -->
+        <aside id="sidebar">
+          <div id="view-explorer" class="view">
+            <div class="view-title">资源管理器
+              <span class="tree-actions">
+                <button id="tree-open" class="mini-btn" title="打开项目">📂</button>
+                <button id="tree-new" class="mini-btn" title="新建 .nsat">＋</button>
+              </span>
+            </div>
+            <div id="file-tree"></div>
+          </div>
+          <div id="view-assistant" class="view hidden">
+            <div class="view-title">AI 助手（项目级）</div>
+            <div id="chat-list"></div>
+            <div id="chat-input-row">
+              <input id="chat-input" placeholder="问项目结构、让它建文件…" spellcheck="false">
+              <button id="chat-send" class="btn primary">发送</button>
+            </div>
+          </div>
+        </aside>
+        <div id="hsplit" title="拖动调整侧栏宽度"></div>
+
+        <!-- 编辑区 -->
+        <section id="editor-area">
+          <div id="tabs"></div>
+          <div id="editors">
+            <div id="empty-hint">
+              <h2>NSAT Studio</h2>
+              <p>通过菜单「文件 → 打开项目」选择文件夹，或输入路径后回车。</p>
+              <p>编辑 .nsat → 点「▶ 运行」即可让 AI 翻译并测试。</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="vsplit" title="拖动调整终端高度"></div>
+
+      <!-- 底部终端面板 -->
+      <section id="bottom-panel">
+        <div class="panel-tabs">
+          <button class="ptab active" data-tab="console">输出</button>
+          <button class="ptab" data-tab="check">校验结果</button>
+          <button class="ptab" data-tab="job">任务</button>
+        </div>
+        <div id="panel-console" class="panel-body active"><pre id="console"></pre></div>
+        <div id="panel-check" class="panel-body"><pre id="check-out"></pre></div>
+        <div id="panel-job" class="panel-body"><pre id="job-out"></pre></div>
+      </section>
+    </main>
+
+    <!-- 状态栏 -->
+    <footer id="statusbar">
+      <span id="st-root">未打开项目</span>
+      <span id="st-lang"></span>
+      <span id="st-job" class="spacer"></span>
+      <span id="st-msg"></span>
+    </footer>
+  </div>
+
+  <!-- 隐藏的文件/文件夹选择器（已弃用，改用后端目录浏览器） -->
+
+  <!-- 对话框容器 -->
+  <div id="modal-mask" class="hidden">
+    <div id="modal-box"></div>
+  </div>
+
+  <!-- 设置窗口 -->
+  <div id="settings-mask" class="hidden">
+    <div id="settings-box">
+      <h3>设置</h3>
+      <div class="set-row"><label>AI 提供商</label>
+        <select id="set-provider">
+          <option value="deepseek">DeepSeek</option>
+          <option value="openai">OpenAI</option>
+          <option value="anthropic">Anthropic</option>
+          <option value="custom">自定义（OpenAI 兼容）</option>
+        </select>
+      </div>
+      <div class="set-row"><label>模型</label><input type="text" id="set-model" spellcheck="false"></div>
+      <div class="set-row"><label>API Key</label><input type="password" id="set-apikey" placeholder="输入 API Key" spellcheck="false"><button class="btn" id="set-keyclear" title="清除已保存的 Key">清除</button></div>
+      <div class="set-row"><label>Base URL（自定义时必填）</label><input type="text" id="set-baseurl" spellcheck="false"></div>
+      <div class="set-row"><label>逻辑错误处理</label>
+        <select id="set-logicmode">
+          <option value="ask">每次询问</option>
+          <option value="ignore">全部忽略</option>
+          <option value="auto_fix">自动按 AI 建议</option>
+        </select>
+      </div>
+      <div class="set-row"><label>文件操作权限</label>
+        <select id="set-permmode">
+          <option value="ask">每次询问</option>
+          <option value="allow_all">全部允许</option>
+          <option value="deny_all">全部拒绝</option>
+        </select>
+      </div>
+      <div class="set-row"><label><input type="checkbox" id="set-runcommand"> 允许 AI 执行命令</label></div>
+      <div class="set-sec">自动保存</div>
+      <div class="set-row"><label><input type="checkbox" id="set-autosave"> 开启自动保存</label></div>
+      <div class="set-row"><label>间隔（秒）</label><input type="number" id="set-autosave-interval" min="1" max="60" step="1" value="1" spellcheck="false"></div>
+      <div class="set-actions">
+        <span id="set-msg" style="color:var(--fg-dim)"></span>
+        <button class="btn" id="set-cancel">取消</button>
+        <button class="btn primary" id="set-save">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="vendor/editor.js"></script>
+  <script src="static/app.js"></script>
+</body>
+</html>

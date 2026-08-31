@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nsat"
+version = "0.1.0"
+description = "NSAT - 用自然语言描述程序逻辑，由 AI 翻译为目标语言的中间语言与编译器"
+requires-python = ">=3.10"
+license = { text = "GPL-3.0-or-later" }
+dependencies = [
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+ui = ["pywebview>=5"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+nsat = "nsat.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["nsat*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

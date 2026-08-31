@@ -1,0 +1,31 @@
+{
+  "ai": {
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "api_key": "",
+    "base_url": "",
+    "temperature": 0.2,
+    "max_tokens": 8192,
+    "timeout": 180
+  },
+  "logic_errors": {
+    "mode": "ask"
+  },
+  "permissions": {
+    "mode": "ask",
+    "enable_tools": true,
+    "allow_run_command": false
+  },
+  "context": {
+    "history_rounds": 4,
+    "follow_refs_depth": 3
+  },
+  "targets": {
+    "python": { "run": ["python"], "build": ["python", "-m", "py_compile"] },
+    "go": { "run": ["go", "run"], "build": ["go", "build"] },
+    "rust": { "run": ["cargo", "run"], "build": ["cargo", "build"] }
+  },
+  "output": {
+    "dir": "out"
+  }
+}
